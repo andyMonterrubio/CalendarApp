@@ -38,7 +38,7 @@ header .title {
 .calendar {
   display: block;
   margin: 30px auto;
-  max-width: 50em;
+  max-width: 900px;
 }
 
 
@@ -186,7 +186,7 @@ header .title {
   opacity: 0;
   font-size: 8em;
   position: absolute;
-  top: -.2em;
+  top: 0;
   right: -.05em;
   transition: .25s ease-out;
   letter-spacing: -.07em;
@@ -201,6 +201,8 @@ header .title {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
+  height: 150px;
+  padding-top: 19px;
 }
 
 .calendar .body .row .col:first-child, .calendar .body .row .col:last-child  {
@@ -220,4 +222,15 @@ header .title {
 
 .MuiDialogTitle-root{
   border-bottom: 1px solid var(--border-color);
+}
+
+.reminder{
+  display: block;
+  margin: 10px 5px 0 10px;
+  border: 1px solid #a53860;
+  padding: 5px;
+  border-radius: 5px;
+  width: auto;
+  background-color: #a53860;
+  color: white;
 }

@@ -5,7 +5,7 @@ import { format,  startOfMonth, endOfMonth, isSameDay,
     isSameMonth } from 'date-fns'
 import CreateModal from './CreateModal'
 
-import {Grid, Paper, IconButton, Dialog} from '@material-ui/core'
+import {Grid, Paper, IconButton, Dialog, Snackbar} from '@material-ui/core'
 import { ArrowForwardIos, ArrowBackIos } from '@material-ui/icons/'
 
 const useStyles = makeStyles(theme => ({
@@ -29,6 +29,20 @@ const Calendar = (props) => {
     const [month, setMonth] = useState(new Date());
     const [selected, setSelected] = useState(new Date());
     const [showModal, setShowModal] = useState(false)
+    const [reminders, setReminders] = useState([{title: "Almuerzo", 
+    day: "Wed Feb 19 2020 00:00:00 GMT-0600 (Central Standard Time)"}, {title: "Dentista", 
+    day: "Fri Feb 21 2020 00:00:00 GMT-0600 (Central Standard Time)"}, {title: "Compras", 
+    day: "Tue Feb 11 2020 00:00:00 GMT-0600 (Central Standard Time)"}])
+    const [open, setOpen] = useState(false);
+
+    const handleClose = () => {
+        setOpen(false);
+      };
+    
+    const updateReminders = (newReminder) => {
+        setOpen(true);
+        setReminders([...reminders, newReminder])
+      }
 
     const renderMonth = () => {
         const dateFormat = "MMMM yyyy";
@@ -87,6 +101,10 @@ const Calendar = (props) => {
             for (let i = 0; i < 7; i++) {
                 formattedDate = format(day, dateFormat);
                 const copyDay = day;
+                
+                const cloneDay = day.toDateString()
+                let copyReminders = reminders;
+                let filteredData = copyReminders.filter(item => item.day.includes(cloneDay));
 
                 days.push(
                     <div
@@ -100,10 +118,17 @@ const Calendar = (props) => {
                     >
                         <span className="number">{formattedDate}</span>
                         <span className="bg">{formattedDate}</span>
+                        {filteredData.length > 0 && 
+                        filteredData.map(function(element) {
+                            return <span className="reminder">{element.title}</span>
+                        })
+                        
+                        }
                     </div>
                 );
                 day = addDays(day, 1);
             }
+
             rows.push(
                 <div className="row" key={day}>
                 {days}
@@ -118,7 +143,6 @@ const Calendar = (props) => {
     const onDateClick = (day) => { 
         setSelected(day)
         setShowModal(true)
-        console.log(day)
     };
 
     const nextMonth = () => { 
@@ -151,10 +175,21 @@ const Calendar = (props) => {
                 onClose={cancelCreateDialog}
                 aria-labelledby="event-dialog">
                     <CreateModal
-                    handleCreate={cancelCreateDialog}
+                    handleCreate={updateReminders}
                     handleCancel={cancelCreateDialog} 
                     date={selected}/>
                 </Dialog>
+
+                <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={open}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        message="Reminder added"
+      />
         </div>
     )
 }

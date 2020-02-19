@@ -40,19 +40,36 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const NewResourceForm = props => {
+const CreateModal = props => {
     const classes = useStyles();
     const [selectedDate, setSelectedDate] = useState(props.date);
     const [name, setName] = useState('')
+    const [errMsg, setErrMsg] = useState({});
+    const [error, setError] = useState(false);
 
     const handleDateChange = date => {
         setSelectedDate(date);
     };
 
     const handleSubmit = () => {
-      //props.handleCreate();
-      console.log("submit")
+      let data = {
+          title: name, 
+          day: String(selectedDate),
+      }
+      props.handleCreate(data);
+      props.handleCancel();
   }
+    
+    const handleTitle = (e) => {
+        let maxLenght = 30;
+        if(e.target.value.length <= maxLenght){
+            setName(e.target.value)
+            setError(false)
+        } else {
+            setError(true)
+        }
+            
+    }
 
     return (
         <React.Fragment>
@@ -75,9 +92,17 @@ const NewResourceForm = props => {
                     fullWidth
                     type="text"
                     value={name}
-                    onChange={e => {
-                    setName(e.target.value)
-                }}/>
+                    onChange={handleTitle}
+                    error={errMsg.title ? true : false}
+                    helperText={errMsg.title ? errMsg.title : ""}
+                    onBlur={() => {
+                        if (!error) {
+                            setErrMsg({ ...errMsg, title: "" });
+                        } else {
+                            setErrMsg({ ...errMsg, title: "Max 30 chars" });
+                        }
+                    }}
+                            />
 
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
@@ -129,4 +154,4 @@ const NewResourceForm = props => {
         </React.Fragment>
     )
 }
-export default NewResourceForm;
+export default CreateModal;
